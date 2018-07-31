@@ -7,13 +7,30 @@ use Illuminate\Support\ServiceProvider;
 class YoutubeUploaderServiceProvider extends ServiceProvider
 {
     /**
-     * Perform post-registration booting of services.
+     * Indicates if loading of the provider is deferred.
      *
-     * @return void
+     * @var bool
+     */
+    protected $defer = false;
+
+    /**
+     * Bootstrap the application events.
      */
     public function boot()
     {
-        //
+        $config = realpath(__DIR__.'/../config/youtubeUploader.php');
+
+        $this->publishes([$config => config_path('youtubeUploader.php')], 'config');
+
+        $this->mergeConfigFrom($config, 'youtubeUploader');
+
+        $this->publishes([
+            __DIR__.'/../migrations/' => database_path('migrations')
+        ], 'migrations');
+
+        if($this->app->config->get('youtube.routes.enabled')) {
+            include __DIR__.'/../routes/web.php';
+        }
     }
 
     /**
