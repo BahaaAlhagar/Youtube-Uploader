@@ -17,12 +17,12 @@ class YoutubeUploaderServiceProvider extends ServiceProvider
     }
 
     /**
-     * Register any package services.
-     *
-     * @return void
+     * Register the service provider.
      */
     public function register()
     {
-        //
+        $this->app->singleton('youtubeUploader', function($app) {
+            return new YoutubeUploader($app, new \Google_Client);
+        });
     }
 }
