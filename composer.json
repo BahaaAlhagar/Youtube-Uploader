@@ -1,14 +1,14 @@
 {
-    "name": "BahaaAlhagar/YoutubeUploader",
+    "name": "bahaaalhagar/youtube-uploader",
     "type": "library",
-    "description": ":simple Youtube wrapper",
+    "description": ":simple Youtube uploader",
     "keywords": [
         "BahaaAlhagar",
         "Youtube Uploader",
         "PHP",
         "laravel",
         "google api",
-        "youtube",
+        "youtube"
     ],
     "homepage": "https://github.com/BahaaAlhagar/YoutubeUploader",
     "license": "MIT",
