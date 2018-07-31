@@ -1,6 +1,6 @@
 <?php
 
-namespace BahaaAlhagar\Youtube\Facades;
+namespace BahaaAlhagar\YoutubeUploader\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
