@@ -39,7 +39,7 @@ class YoutubeUploaderServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->singleton('youtubeUploader', function($app) {
-            return new youtubeUploader($app, new \Google_Client);
+            return new YoutubeUploader($app, new \Google_Client);
         });
     }
 }

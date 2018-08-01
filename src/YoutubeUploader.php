@@ -335,21 +335,21 @@ class YoutubeUploader
     private function setup(Google_Client $client)
     {
         if(
-            !$this->app->config->get('youtube.client_id') ||
-            !$this->app->config->get('youtube.client_secret')
+            !$this->app->config->get('youtubeUploader.client_id') ||
+            !$this->app->config->get('youtubeUploader.client_secret')
         ) {
             throw new Exception('A Google "client_id" and "client_secret" must be configured.');
         }
 
-        $client->setClientId($this->app->config->get('youtube.client_id'));
-        $client->setClientSecret($this->app->config->get('youtube.client_secret'));
-        $client->setScopes($this->app->config->get('youtube.scopes'));
+        $client->setClientId($this->app->config->get('youtubeUploader.client_id'));
+        $client->setClientSecret($this->app->config->get('youtubeUploader.client_secret'));
+        $client->setScopes($this->app->config->get('youtubeUploader.scopes'));
         $client->setAccessType('offline');
         $client->setApprovalPrompt('force');
         $client->setRedirectUri(url(
-            $this->app->config->get('youtube.routes.prefix')
+            $this->app->config->get('youtubeUploader.routes.prefix')
             . '/' .
-            $this->app->config->get('youtube.routes.redirect_uri')
+            $this->app->config->get('youtubeUploader.routes.redirect_uri')
         ));
 
         return $this->client = $client;
