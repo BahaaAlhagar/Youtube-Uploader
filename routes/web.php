@@ -3,12 +3,12 @@
 /**
  * Route URI's
  */
-Route::group(['prefix' => config('youtube.routes.prefix')], function() {
+Route::group(['prefix' => config('youtubeUploader.routes.prefix')], function() {
 
     /**
      * Authentication
      */
-    Route::get(config('youtube.routes.authentication_uri'), function()
+    Route::get(config('youtubeUploader.routes.authentication_uri'), function()
     {
         return redirect()->to(YoutubeUploader::createAuthUrl());
     });
@@ -16,7 +16,7 @@ Route::group(['prefix' => config('youtube.routes.prefix')], function() {
     /**
      * Redirect
      */
-    Route::get(config('youtube.routes.redirect_uri'), function(Illuminate\Http\Request $request)
+    Route::get(config('youtubeUploader.routes.redirect_uri'), function(Illuminate\Http\Request $request)
     {
         if(!$request->has('code')) {
             throw new Exception('$_GET[\'code\'] is not set. Please re-authenticate.');
@@ -26,7 +26,7 @@ Route::group(['prefix' => config('youtube.routes.prefix')], function() {
 
         YoutubeUploader::saveAccessTokenToDB($token);
 
-        return redirect(config('youtube.routes.redirect_back_uri', '/'));
+        return redirect(config('youtubeUploader.routes.redirect_back_uri', '/'));
     });
 
 });

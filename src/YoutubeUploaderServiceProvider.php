@@ -28,7 +28,7 @@ class YoutubeUploaderServiceProvider extends ServiceProvider
             __DIR__.'/../migrations/' => database_path('migrations')
         ], 'migrations');
 
-        if($this->app->config->get('youtube.routes.enabled')) {
+        if($this->app->config->get('youtubeUploader.routes.enabled')) {
             include __DIR__.'/../routes/web.php';
         }
     }
@@ -39,7 +39,7 @@ class YoutubeUploaderServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->singleton('youtubeUploader', function($app) {
-            return new YoutubeUploader($app, new \Google_Client);
+            return new youtubeUploader($app, new \Google_Client);
         });
     }
 }

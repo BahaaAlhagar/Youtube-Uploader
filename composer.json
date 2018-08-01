@@ -51,7 +51,7 @@
                 "BahaaAlhagar\\YoutubeUploader\\YoutubeUploaderServiceProvider"
             ],
             "aliases": {
-                "Cart": "BahaaAlhagar\\YoutubeUploader\\Facades\\YoutubeUploader"
+                "YoutubeUploader": "BahaaAlhagar\\YoutubeUploader\\Facades\\YoutubeUploader"
             }
         }
     },
