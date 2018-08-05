@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Google_Client;
 use Google_Service_YouTube;
 use Illuminate\Support\Facades\DB;
+use BahaaAlhagar\YoutubeUploader\Exceptions\NotDefinedPlaylistException;
 
 class YoutubeUploader
 {
@@ -290,6 +291,53 @@ class YoutubeUploader
         return $this;
     }
 
+    /**
+     * [addVideoToPlaylist add Video to youtube playlist]
+     * @param [string] $playlistId 
+     * @param [string] $videoId    
+     * @param [string] $title      
+     */
+    public function addVideoToPlaylist($playlistId = null, $videoId, $title = null)
+    {
+        $playlistId = $playlistId ? $playlistId : $this->$playlistId;
+
+        if(!$playlistId){
+            throw new NotDefinedPlaylistException("please provide playlist ID");
+        }
+
+        try {
+            // Add a video to the playlist. First, define the resource being added
+            // to the playlist by setting its video ID and kind.
+            $resourceId = new \Google_Service_YouTube_ResourceId();
+            $resourceId->setVideoId($playlistId);
+            $resourceId->setKind('youtube#video');
+
+            // Then define a snippet for the playlist item. Set the playlist item's
+            // title if you want to display a different value than the title of the
+            // video being added. Add the resource ID and the playlist ID retrieved
+            $playlistItemSnippet = new \Google_Service_YouTube_PlaylistItemSnippet();
+            $title ?: $playlistItemSnippet->setTitle($title);
+            $playlistItemSnippet->setPlaylistId($playlistId);
+            $playlistItemSnippet->setResourceId($resourceId);
+
+            // Finally, create a playlistItem resource and add the snippet to the
+            // resource, then call the playlistItems.insert method to add the playlist
+            // item.
+            $playlistItem = new \Google_Service_YouTube_PlaylistItem();
+            $playlistItem->setSnippet($playlistItemSnippet);
+            $playlistItemResponse = $this->youtube->playlistItems->insert(
+                'snippet,contentDetails', $playlistItem, array());
+
+        } catch (\Google_Service_Exception $e) {
+            throw new Exception($e->getMessage());
+        } catch (\Google_Exception $e) {
+            throw new Exception($e->getMessage());
+        } 
+
+        return $playlistItemResponse;
+    }
+    
+    
     /**
      * @param $data
      * @param $privacyStatus
