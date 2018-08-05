@@ -38,6 +38,8 @@ class YoutubeUploader
      */
     private $videoId;
 
+    private $playlistId;
+
     /**
      * Video Snippet
      *
@@ -245,6 +247,50 @@ class YoutubeUploader
     }
 
     /**
+     * [createPlaylist create youtube playlist]
+     * @param  string $title         
+     * @param  string $description   
+     * @param  string $privacyStatus 
+     * @return string                
+     */
+    public function createPlaylist($title, $description, $privacyStatus = 'public')
+    {
+        $this->handleAccessToken();
+
+        try {
+            // 1. Create the snippet for the playlist. Set its title and description.
+            $playlistSnippet = new \Google_Service_YouTube_PlaylistSnippet();
+            $playlistSnippet->setTitle($title));
+            $playlistSnippet->setDescription($description);
+
+
+            // 2. Define the playlist's status.
+            $playlistStatus = new \Google_Service_YouTube_PlaylistStatus();
+            $playlistStatus->setPrivacyStatus($privacyStatus);
+
+
+            // 3. Define a playlist resource and associate the snippet and status
+            // defined above with that resource.
+            $youTubePlaylist = new \Google_Service_YouTube_Playlist();
+            $youTubePlaylist->setSnippet($playlistSnippet);
+            $youTubePlaylist->setStatus($playlistStatus);
+
+            // 4. Call the playlists.insert method to create the playlist. The API
+            // response will contain information about the new playlist.
+            $playlistResponse = $this->youtube->playlists->insert('snippet,status',
+                $youTubePlaylist, array());
+            $this->playlistId = $playlistResponse['id'];
+
+        } catch (\Google_Service_Exception $e) {
+            throw new Exception($e->getMessage());
+        } catch (\Google_Exception $e) {
+            throw new Exception($e->getMessage());
+        }
+        
+        return $this;
+    }
+
+    /**
      * @param $data
      * @param $privacyStatus
      * @param null $id
@@ -324,6 +370,17 @@ class YoutubeUploader
     {
         return $this->thumbnailUrl;
     }
+
+    /**
+     * Return the playlist ID
+     *
+     * @return string
+     */
+    public function getPlaylistId()
+    {
+        return $this->playlistId;
+    }
+
 
     /**
      * Setup the Google Client
