@@ -297,13 +297,15 @@ class YoutubeUploader
      * @param [string] $videoId    
      * @param [string] $title      
      */
-    public function addVideoToPlaylist($playlistId = null, $videoId, $title = null)
+    public function addVideoToPlaylist($videoId, $playlistId = null, $title = null)
     {
         $playlistId = $playlistId ? $playlistId : $this->$playlistId;
 
         if(!$playlistId){
             throw new NotDefinedPlaylistException("please provide playlist ID");
         }
+
+        $this->handleAccessToken();
 
         try {
             // Add a video to the playlist. First, define the resource being added
