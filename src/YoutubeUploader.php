@@ -261,7 +261,7 @@ class YoutubeUploader
         try {
             // 1. Create the snippet for the playlist. Set its title and description.
             $playlistSnippet = new \Google_Service_YouTube_PlaylistSnippet();
-            $playlistSnippet->setTitle($title));
+            $playlistSnippet->setTitle($title);
             $playlistSnippet->setDescription($description);
 
 
