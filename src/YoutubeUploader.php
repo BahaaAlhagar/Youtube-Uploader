@@ -311,7 +311,7 @@ class YoutubeUploader
             // Add a video to the playlist. First, define the resource being added
             // to the playlist by setting its video ID and kind.
             $resourceId = new \Google_Service_YouTube_ResourceId();
-            $resourceId->setVideoId($playlistId);
+            $resourceId->setVideoId($videoId);
             $resourceId->setKind('youtube#video');
 
             // Then define a snippet for the playlist item. Set the playlist item's
