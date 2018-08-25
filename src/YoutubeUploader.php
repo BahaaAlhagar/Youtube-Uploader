@@ -84,7 +84,7 @@ class YoutubeUploader
      */
     public function upload($path, array $data = [], $privacyStatus = 'public')
     {
-        if(!file_exists($path)) {
+        if (!file_exists($path)) {
             throw new Exception('Video file does not exist at path: "'. $path .'". Provide a full path to the file before attempting to upload.');
         }
 
@@ -134,7 +134,7 @@ class YoutubeUploader
             // Set the Snippet from Uploaded Video
             $this->snippet = $status['snippet'];
 
-        }  catch (\Google_Service_Exception $e) {
+        } catch (\Google_Service_Exception $e) {
             throw new Exception($e->getMessage());
         } catch (\Google_Exception $e) {
             throw new Exception($e->getMessage());
@@ -170,7 +170,7 @@ class YoutubeUploader
 
             // Set the Snippet from Updated Video
             $this->snippet = $status['snippet'];
-        }  catch (\Google_Service_Exception $e) {
+        } catch (\Google_Service_Exception $e) {
             throw new Exception($e->getMessage());
         } catch (\Google_Exception $e) {
             throw new Exception($e->getMessage());
@@ -249,10 +249,10 @@ class YoutubeUploader
 
     /**
      * [createPlaylist create youtube playlist]
-     * @param  string $title         
-     * @param  string $description   
-     * @param  string $privacyStatus 
-     * @return string                
+     * @param  string $title
+     * @param  string $description
+     * @param  string $privacyStatus
+     * @return string
      */
     public function createPlaylist($title, $description, $privacyStatus = 'public')
     {
@@ -278,7 +278,7 @@ class YoutubeUploader
 
             // 4. Call the playlists.insert method to create the playlist. The API
             // response will contain information about the new playlist.
-            $playlistResponse = $this->youtube->playlists->insert('snippet,status',
+            $playlistResponse = $this->youtube->playlists->insert('snippet,status', 
                 $youTubePlaylist, array());
             $this->playlistId = $playlistResponse['id'];
 
@@ -297,7 +297,7 @@ class YoutubeUploader
      * @param [string] $videoId    
      * @param [string] $title      
      */
-    public function addVideoToPlaylist($videoId, $playlistId = null, $title = null)
+    public function addVideoToPlaylist(array $video[], $playlistId = null)
     {
         $playlistId = $playlistId ? $playlistId : $this->$playlistId;
 
@@ -311,14 +311,14 @@ class YoutubeUploader
             // Add a video to the playlist. First, define the resource being added
             // to the playlist by setting its video ID and kind.
             $resourceId = new \Google_Service_YouTube_ResourceId();
-            $resourceId->setVideoId($videoId);
+            $resourceId->setVideoId($video['id']);
             $resourceId->setKind('youtube#video');
 
             // Then define a snippet for the playlist item. Set the playlist item's
             // title if you want to display a different value than the title of the
             // video being added. Add the resource ID and the playlist ID retrieved
             $playlistItemSnippet = new \Google_Service_YouTube_PlaylistItemSnippet();
-            $title ?: $playlistItemSnippet->setTitle($title);
+            $video['title'] ?: $playlistItemSnippet->setTitle($video['title']);
             $playlistItemSnippet->setPlaylistId($playlistId);
             $playlistItemSnippet->setResourceId($resourceId);
 
