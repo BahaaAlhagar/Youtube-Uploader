@@ -301,8 +301,19 @@ class YoutubeUploader
     {
         $playlistId = $playlistId ? $playlistId : $this->$playlistId;
 
-        if(!$playlistId){
+        if (!$playlistId)
+        {
             throw new NotDefinedPlaylistException("please provide playlist ID");
+        }
+
+        if (!isset($video['id']))
+        {
+            throw new Exception('Please provide a Video youtube id.');
+        }
+
+        if (!$this->exists($video['id']))
+        {
+            throw new Exception('A video matching id "'. $video['id'] .'" could not be found.');
         }
 
         $this->handleAccessToken();
@@ -318,7 +329,7 @@ class YoutubeUploader
             // title if you want to display a different value than the title of the
             // video being added. Add the resource ID and the playlist ID retrieved
             $playlistItemSnippet = new \Google_Service_YouTube_PlaylistItemSnippet();
-            $video['title'] ?: $playlistItemSnippet->setTitle($video['title']);
+            isset($video['title']) ?: $playlistItemSnippet->setTitle($video['title']);
             $playlistItemSnippet->setPlaylistId($playlistId);
             $playlistItemSnippet->setResourceId($resourceId);
 
