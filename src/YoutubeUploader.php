@@ -133,7 +133,6 @@ class YoutubeUploader
 
             // Set the Snippet from Uploaded Video
             $this->snippet = $status['snippet'];
-
         } catch (\Google_Service_Exception $e) {
             throw new Exception($e->getMessage());
         } catch (\Google_Exception $e) {
@@ -219,7 +218,6 @@ class YoutubeUploader
 
             $this->client->setDefer(false);
             $this->thumbnailUrl = $status['items'][0]['default']['url'];
-
         } catch (\Google_Service_Exception $e) {
             throw new Exception($e->getMessage());
         } catch (\Google_Exception $e) {
@@ -278,10 +276,12 @@ class YoutubeUploader
 
             // 4. Call the playlists.insert method to create the playlist. The API
             // response will contain information about the new playlist.
-            $playlistResponse = $this->youtube->playlists->insert('snippet,status', 
-                $youTubePlaylist, array());
+            $playlistResponse = $this->youtube->playlists->insert(
+                'snippet,status',
+                $youTubePlaylist,
+                array()
+            );
             $this->playlistId = $playlistResponse['id'];
-
         } catch (\Google_Service_Exception $e) {
             throw new Exception($e->getMessage());
         } catch (\Google_Exception $e) {
@@ -293,26 +293,23 @@ class YoutubeUploader
 
     /**
      * [addVideoToPlaylist add Video to youtube playlist]
-     * @param [string] $playlistId 
-     * @param [string] $videoId    
-     * @param [string] $title      
+     * @param [string] $playlistId
+     * @param [string] $videoId
+     * @param [string] $title
      */
-    public function addVideoToPlaylist(array $video[], $playlistId = null)
+    public function addVideoToPlaylist(array $video = [], $playlistId = null)
     {
         $playlistId = $playlistId ? $playlistId : $this->$playlistId;
 
-        if (!$playlistId)
-        {
+        if (!$playlistId) {
             throw new NotDefinedPlaylistException("please provide playlist ID");
         }
 
-        if (!isset($video['id']))
-        {
+        if (!isset($video['id'])) {
             throw new Exception('Please provide a Video youtube id.');
         }
 
-        if (!$this->exists($video['id']))
-        {
+        if (!$this->exists($video['id'])) {
             throw new Exception('A video matching id "'. $video['id'] .'" could not be found.');
         }
 
@@ -329,7 +326,12 @@ class YoutubeUploader
             // title if you want to display a different value than the title of the
             // video being added. Add the resource ID and the playlist ID retrieved
             $playlistItemSnippet = new \Google_Service_YouTube_PlaylistItemSnippet();
-            isset($video['title']) ?: $playlistItemSnippet->setTitle($video['title']);
+
+
+            if (isset($video['title'])) {
+                $playlistItemSnippet->setTitle($video['title']);
+            }
+
             $playlistItemSnippet->setPlaylistId($playlistId);
             $playlistItemSnippet->setResourceId($resourceId);
 
@@ -339,13 +341,15 @@ class YoutubeUploader
             $playlistItem = new \Google_Service_YouTube_PlaylistItem();
             $playlistItem->setSnippet($playlistItemSnippet);
             $playlistItemResponse = $this->youtube->playlistItems->insert(
-                'snippet,contentDetails', $playlistItem, array());
-
+                'snippet,contentDetails',
+                $playlistItem,
+                array()
+            );
         } catch (\Google_Service_Exception $e) {
             throw new Exception($e->getMessage());
         } catch (\Google_Exception $e) {
             throw new Exception($e->getMessage());
-        } 
+        }
 
         return $playlistItemResponse;
     }
@@ -362,10 +366,18 @@ class YoutubeUploader
         // Setup the Snippet
         $snippet = new \Google_Service_YouTube_VideoSnippet();
 
-        if (array_key_exists('title', $data))       $snippet->setTitle($data['title']);
-        if (array_key_exists('description', $data)) $snippet->setDescription($data['description']);
-        if (array_key_exists('tags', $data))        $snippet->setTags($data['tags']);
-        if (array_key_exists('category_id', $data)) $snippet->setCategoryId($data['category_id']);
+        if (array_key_exists('title', $data)) {
+            $snippet->setTitle($data['title']);
+        }
+        if (array_key_exists('description', $data)) {
+            $snippet->setDescription($data['description']);
+        }
+        if (array_key_exists('tags', $data)) {
+            $snippet->setTags($data['tags']);
+        }
+        if (array_key_exists('category_id', $data)) {
+            $snippet->setCategoryId($data['category_id']);
+        }
 
         // Set the Privacy Status
         $status = new \Google_Service_YouTube_VideoStatus();
@@ -373,8 +385,7 @@ class YoutubeUploader
 
         // Set the Snippet & Status
         $video = new \Google_Service_YouTube_Video();
-        if ($id)
-        {
+        if ($id) {
             $video->setId($id);
         }
 
@@ -397,7 +408,9 @@ class YoutubeUploader
 
         $response = $this->youtube->videos->listVideos('status', ['id' => $id]);
 
-        if (empty($response->items)) return false;
+        if (empty($response->items)) {
+            return false;
+        }
 
         return true;
     }
@@ -452,7 +465,7 @@ class YoutubeUploader
      */
     private function setup(Google_Client $client)
     {
-        if(
+        if (
             !$this->app->config->get('youtubeUploader.client_id') ||
             !$this->app->config->get('youtubeUploader.client_secret')
         ) {
@@ -497,7 +510,7 @@ class YoutubeUploader
                     ->latest('created_at')
                     ->first();
 
-        return $latest ? (is_array($latest) ? $latest['access_token'] : $latest->access_token ) : null;
+        return $latest ? (is_array($latest) ? $latest['access_token'] : $latest->access_token) : null;
     }
 
     /**
@@ -511,11 +524,9 @@ class YoutubeUploader
             throw new \Exception('An access token is required.');
         }
 
-        if($this->client->isAccessTokenExpired())
-        {
+        if ($this->client->isAccessTokenExpired()) {
             // If we have a "refresh_token"
-            if (array_key_exists('refresh_token', $accessToken))
-            {
+            if (array_key_exists('refresh_token', $accessToken)) {
                 // Refresh the access token
                 $this->client->refreshToken($accessToken['refresh_token']);
 
