@@ -24,7 +24,7 @@ And also add the alias to the same file.
 ```php
 'aliases' => [
     ...
-    'Youtube' => BahaaAlhagar\YoutubeUploader\Facades\YoutubeUploader::class,
+    'YoutubeUploader' => BahaaAlhagar\YoutubeUploader\Facades\YoutubeUploader::class,
 ],
 ```
 
